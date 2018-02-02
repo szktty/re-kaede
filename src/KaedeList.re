@@ -15,6 +15,8 @@ let iteri = (list, ~f) => {
 
 let map = (list, ~f) => List.map(f, list);
 
+let reduce = (list, ~init, ~f) => List.fold_left(f, init, list);
+
 let contains = (list, ~f) => L.exists(f, list);
 
 let toArray = list =>

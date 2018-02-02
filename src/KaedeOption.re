@@ -1,5 +1,11 @@
 type t('a) = option('a);
 
+let iter = (opt, ~f) =>
+  switch opt {
+  | None => ()
+  | Some(value) => f(value)
+  };
+
 let valueExn = (~message="value is not found", opt) =>
   switch opt {
   | Some(value) => value

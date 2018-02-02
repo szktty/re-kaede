@@ -13,7 +13,7 @@ module Any = {
     | Array
     | Object
     | Function;
-  let type_ = (js: Js.t('a)) : jsType =>
+  let type_ = (js: Js.t('a)) : type_ =>
     switch (Js.typeof(js)) {
     | "undefined" => Undefined
     | "boolean" => Boolean
@@ -21,7 +21,7 @@ module Any = {
     | "string" => String
     | "function" => Function
     | "object" =>
-      if (Js.unsafe_le(Obj.magic(js), 0)) {
+      if (Js.unsafe_le(Reason.Obj.magic(js), 0)) {
         Null;
       } else if (Js.Array.isArray(js)) {
         Array;
@@ -38,19 +38,19 @@ module Any = {
     let rec diet0 = (js: Js.t('a)) =>
       switch (type_(js)) {
       | Object =>
-        let dict: Js.Dict.t(Js.t('a)) = Obj.magic(js);
+        let dict: Js.Dict.t(Js.t('a)) = Reason.Obj.magic(js);
         let newDict = Js.Dict.empty();
-        Array.iter(
+        Reason.Array.iter(
           key => {
             let value = Js.Dict.unsafeGet(dict, key);
             switch (type_(value)) {
             | Null => ()
-            | _ => Js.Dict.set(newDict, key, diet0(Obj.magic(value)))
+            | _ => Js.Dict.set(newDict, key, diet0(Reason.Obj.magic(value)))
             };
           },
           Js.Dict.keys(dict)
         );
-        Obj.magic(newDict);
+        Reason.Obj.magic(newDict);
       | _ => js
       };
     diet0(js);
